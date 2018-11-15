@@ -4,6 +4,7 @@ namespace SwoftTest\Rpc\Client;
 
 use Swoft\Rpc\Client\Bean\Collector\ReferenceCollector;
 use Swoft\Rpc\Client\Service\ServiceProxy;
+use SwoftTest\Rpc\Testing\Clients\Demo8098ServiceClient;
 use SwoftTest\Rpc\Testing\Clients\DemoServiceClient;
 use SwoftTest\Rpc\Testing\Lib\DemoServiceInterface;
 use SwoftTest\Rpc\Testing\Pool\Config\DemoServicePoolConfig;
@@ -68,10 +69,10 @@ class RpcTest extends AbstractTestCase
         go(function () {
             \co::sleep(2);
             $cmd = 'php ' . alias('@root') . '/server_restart.php -d';
-            \co::exec($cmd);
+            exec($cmd);
             \co::sleep(2);
 
-            $client = bean(DemoServiceClient::class);
+            $client = bean(Demo8098ServiceClient::class);
             $res = $client->version();
             $this->assertEquals('1.0.0', $res);
         });

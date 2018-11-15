@@ -38,7 +38,7 @@ class RpcCommand
 
         // tcp启动参数
         $tcpHost = $tcpStatus['host'];
-        $tcpPort = 8098;
+        $tcpPort = $tcpStatus['port'];
         $tcpType = $tcpStatus['type'];
         $tcpMode = $tcpStatus['mode'];
 
@@ -148,6 +148,10 @@ class RpcCommand
         $script = \input()->getScript();
         $rpcServer = new RpcServer();
         $rpcServer->setScriptFile($script);
+
+        $rpcServer->tcpSetting['port'] = 8098;
+        $rpcServer->tcpSetting['port'] = 8098;
+        $rpcServer->serverSetting['pfile'] = alias('@runtime/8099.pid');
 
         return $rpcServer;
     }
