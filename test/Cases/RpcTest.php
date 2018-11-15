@@ -16,15 +16,19 @@ class RpcTest extends AbstractTestCase
         $this->assertTrue(true);
     }
 
-    public function testVersion()
+    public function testRpc()
     {
         $client = bean(DemoServiceClient::class);
         $this->assertEquals('1.0.0', $client->version());
-    }
 
-    public function testLongMessageByCo()
-    {
+        // SyncServiceConnection not timeout
+        $client = bean(DemoServiceClient::class);
+        $id = rand(1000, 9999);
+        $res = $client->get($id);
+        $this->assertEquals($id, $res);
+
         go(function () {
+            // Test Long Message
             $client = bean(DemoServiceClient::class);
             $string = 'Hi, Agnes! ';
             $str = $client->longMessage($string);
@@ -33,19 +37,8 @@ class RpcTest extends AbstractTestCase
                 $expect .= $string;
             }
             $this->assertEquals($expect, $str);
-        });
-    }
 
-    public function testRpcServiceTimeout()
-    {
-        go(function () {
-            $client = bean(DemoServiceClient::class);
-            $id = rand(1000, 9999);
-            $res = $client->get($id);
-            $this->assertEquals('', $res);
-
-            \co::sleep(1);
-
+            // Test Tcp Timeout
             go(function () {
                 $client = bean(DemoServiceClient::class);
                 $id = rand(1000, 9999);
@@ -53,25 +46,14 @@ class RpcTest extends AbstractTestCase
                 $this->assertEquals('', $res);
             });
 
-            \co::sleep(1);
+            \co::sleep(2);
 
-            go(function () {
-                $client = bean(DemoServiceClient::class);
-                $id = rand(1000, 9999);
-                $res = $client->get($id);
-                $this->assertEquals('', $res);
-            });
-        });
-    }
-
-    public function testRpcServerRestart()
-    {
-        go(function () {
-            $cmd = 'php ' . alias('@root') . '/server_restart.php -d';
+            // Test Rpc Server Restart
+            $cmd = 'php ' . alias('@root') . '/server.php -d';
             \co::exec($cmd);
             \co::sleep(1);
 
-            $client = bean(Demo8098ServiceClient::class);
+            $client = bean(DemoServiceClient::class);
             $res = $client->version();
             $this->assertEquals('1.0.0', $res);
         });
