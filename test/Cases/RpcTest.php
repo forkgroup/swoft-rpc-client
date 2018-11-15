@@ -76,7 +76,6 @@ class RpcTest extends AbstractTestCase
                 $client = bean(DemoServiceClient::class);
                 $res = $client->version();
                 $this->assertEquals('1.0.0', $res);
-                \co::sleep(1);
             }
         });
     }
