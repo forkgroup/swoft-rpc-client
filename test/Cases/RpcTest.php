@@ -67,10 +67,9 @@ class RpcTest extends AbstractTestCase
     public function testRpcServerRestart()
     {
         go(function () {
-            \co::sleep(2);
             $cmd = 'php ' . alias('@root') . '/server_restart.php -d';
-            exec($cmd);
-            \co::sleep(2);
+            \co::exec($cmd);
+            \co::sleep(1);
 
             $client = bean(Demo8098ServiceClient::class);
             $res = $client->version();
